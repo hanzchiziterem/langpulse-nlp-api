@@ -1,0 +1,31 @@
+{
+  "name": "langpulse-nlp-api",
+  "version": "1.0.0",
+  "description": "A powerful, OpenAI-powered language analysis API built with Node.js, TypeScript, Prisma, PostgreSQL, and JWT authentication.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "openai": "^5.5.1",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.3",
+    "openapi-typescript": "^7.8.0",
+    "orval": "^7.10.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
