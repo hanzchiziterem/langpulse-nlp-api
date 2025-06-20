@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: LangPulse API
+  description: A language analysis API powered by OpenAI GPT.
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /api/nlp/analyze:
+    post:
+      summary: Analyze text
+      description: Accepts a string and returns sentiment, tone, and key topics in Parsed JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "I love using AI to solve problems!"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    example: "Sentiment: Positive. Tone: Excited. Topics: AI, innovation."
+        "400":
+          description: Invalid input
+        "500":
+          description: Server error
