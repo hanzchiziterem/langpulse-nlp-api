@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:5000
 
 paths:
-  /api/nlp/analyze:
+  /api/v1/nlp/analyze:
     post:
       summary: Analyze text
       description: Accepts a string and returns sentiment, tone, and key topics in Parsed JSON.
@@ -37,3 +37,79 @@ paths:
           description: Invalid input
         "500":
           description: Server error
+
+  /api/v1/auth/signup:
+    post:
+      summary: Register a new user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: Hanz
+                email:
+                  type: string
+                  example: hanz@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        "200":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully
+        "400":
+          description: Invalid input or user already exists
+
+  /api/v1/auth/signin:
+    post:
+      summary: Login and get JWT token
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: hanz@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: Invalid credentials
+        "400":
+          description: Validation failed
