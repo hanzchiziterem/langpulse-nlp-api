@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "6c7dd1dd-53c2-4d32-88a9-ed3462e6cd13",
+		"name": "langpulse-nlp-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "12821581"
+	},
+	"item": [
+		{
+			"name": "export",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "signup-dummy-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Hanz\",\r\n  \"email\": \"hanz@example.com\",\r\n  \"password\": \"password123\"\r\n}\r\n\r\n{\r\n  \"name\": \"Jammy\",\r\n  \"email\": \"jammy@example.com\",\r\n  \"password\": \"pas324f\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/auth/signup"
+			},
+			"response": []
+		},
+		{
+			"name": "signin-dummy-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"hanz@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/auth/signin"
+			},
+			"response": []
+		},
+		{
+			"name": "signup-psql",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Jammy\",\r\n  \"email\": \"jammy@example.com\",\r\n  \"password\": \"pas324f\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/auth/signup"
+			},
+			"response": []
+		},
+		{
+			"name": "signin-psql",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU2YjNmYWNjLTVkYTAtNGU3Ny1hY2Q5LTc5YTFhMDEzYTg1NyIsImVtYWlsIjoiaGFuekBleGFtcGxlLmNvbSIsImlhdCI6MTc1MDUzMzU3MCwiZXhwIjoxNzUwNTM3MTcwfQ.krcBmocLYxjfH4BbG2mc-USQgyGd2BLaudrOP_NTOE0"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Proxy-Authoriz",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"hanz@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/v1/auth/signin"
+			},
+			"response": []
+		},
+		{
+			"name": "get-history",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "analyze-text",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://localhost:5000/api/v1/nlp/analyze"
+			},
+			"response": []
+		}
+	]
+}
