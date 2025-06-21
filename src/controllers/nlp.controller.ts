@@ -29,3 +29,19 @@ export const getAnalysisHistory = async (req: Request, res: Response) => {
 
   res.json(history);
 }
+
+// Not tested
+export const downloadAnalysisHistory = async (req: Request, res: Response) => {
+const user = (req as any).user;
+
+  const data = await prisma.analysis.findMany({
+    where: { userId: user.id },
+    select: { text: true, result: true, createdAt: true },
+    orderBy: { createdAt: 'desc' }
+  });
+
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', 'attachment; filename=analysis_report.json');
+  res.send(JSON.stringify(data, null, 2));
+}
+
