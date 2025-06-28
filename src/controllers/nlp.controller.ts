@@ -7,7 +7,7 @@ import { AnalyzeInput } from "../types/nlp";
 export const analyzeTextHandler = async (
   req: Request<{}, {}, AnalyzeInput>,
   res: Response
-) => {
+):Promise<void> => {
   const { text } = req.body;
   const validation = inputSchema.safeParse(req.body);
   if (!validation.success) {
