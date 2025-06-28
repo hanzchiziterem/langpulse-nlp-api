@@ -1,25 +1,26 @@
 import request from 'supertest';
 import app from '../app'; 
 
-describe('Auth API', () => {
-  it('should signup a user with valid credentials', async () => {
+describe('POST /api/v1/auth/signup', () => {
+  it('should signup a user.', async () => {
     const res = await request(app).post('/api/v1/auth/signup').send({
-      email: 'test@example.com',
-      password: 'password123',
-    });
+      name: "test1",
+      email: 'test@gmail.com',
+      password: 'test@123',
+    }).expect(201);
 
-    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('success')
+    expect(res.body).toHaveProperty('message')   
   });
 });
 
-describe('Auth API', () => {
-  it('should login a user with valid credentials', async () => {
+describe('POST /api/v1/auth/signin', () => {
+  it('should signin a user with valid credentials.', async () => {
     const res = await request(app).post('/api/v1/auth/signin').send({
-      email: 'hanz@example.com',
-      password: 'password123',
-    });
+      email: 'test@example.com',
+      password: 'test@123',
+    }).expect(200)
 
-    expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty('success');
     expect(res.body).toHaveProperty('message');
     expect(res.body).toHaveProperty('token');
