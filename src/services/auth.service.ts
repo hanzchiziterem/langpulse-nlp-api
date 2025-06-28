@@ -2,18 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma";
 import { User } from "../generated/prisma";
-
-interface SignUpUser {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface SignInUser {
-  email: string;
-  password: string;
-}
-
+import { SignUpUser, SignInUser } from "../types/auth";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const signupUser = async ({
