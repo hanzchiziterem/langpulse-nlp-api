@@ -1,4 +1,3 @@
-import { ChatCompletion } from "openai/resources/index";
 import { openai } from "../app";
 import prisma from "../lib/prisma";
 
