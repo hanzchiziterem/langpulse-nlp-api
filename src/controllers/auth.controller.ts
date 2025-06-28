@@ -15,7 +15,7 @@ export const signupHandler = async (req: Request, res: Response) => {
       password: valid.data.password,
     });
 
-    res.json(result);
+    res.status(201).json(result);
   } catch (error) {
     res.status(401).json({ error: error });
   }
