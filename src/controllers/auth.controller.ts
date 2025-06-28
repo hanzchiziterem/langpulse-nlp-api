@@ -5,18 +5,19 @@ import { signinUser, signupUser } from "../services/auth.service";
 export const signupHandler = async (req: Request, res: Response) => {
   const valid = signupSchema.safeParse(req.body);
   if (!valid.success) {
-    res.status(400).json(valid.error.format())
+    res.status(400).json(valid.error.format());
     return;
   }
   try {
-    const result = await signupUser(
-      valid.data.name,
-      valid.data.email,
-      valid.data.password
-    );
+    const result = await signupUser({
+      name: valid.data.name,
+      email: valid.data.email,
+      password: valid.data.password,
+    });
+
     res.json(result);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    res.status(401).json({ error: error });
   }
 };
 
@@ -28,11 +29,13 @@ export const signinHandler = async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await signinUser(valid.data.email, valid.data.password);
+    const result = await signinUser({
+      email: valid.data.email,
+      password: valid.data.password,
+    });
     res.json(result);
-  } catch (err: any) {
-    res.status(401).json({ error: err.message });
+  } catch (error) {
+    res.status(401).json({ error: error });
   }
 };
 
-export const signoutHandler = async (req: Request, res: Response) => {};
