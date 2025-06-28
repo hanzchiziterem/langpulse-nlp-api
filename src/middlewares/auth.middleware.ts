@@ -10,17 +10,23 @@ export const requireAuth = (
 ) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "No token provided." });
     return;
   }
 
   const token = authHeader.split(" ")[1];
+  if (!token) {
+    res.status(401).json({ error: "Unauthorized" });
+  }
   try {
     if (!JWT_SECRET) {
-      return;
+      throw new Error("JWT_SECRET is not defined in environment.");
     }
-    const decoded = jwt.verify(token, JWT_SECRET);
-    (req as any).user = decoded;
+    //Decoding + attaching 'req.user'
+    const decoded = jwt.verify(token, JWT_SECRET!) as {
+      id: string;
+    };
+    (req as any).user = { id: decoded.id };
     next();
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
