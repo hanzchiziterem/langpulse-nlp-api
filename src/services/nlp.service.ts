@@ -34,7 +34,9 @@ export const analyzeText = async (
       completion.choices[0].message?.content || "No result returned";
 
     await prisma.analysis.create({ data: { userId, text, result } });
-    const parsedJSONResult: AnalysisResult = JSON.parse(result);
+
+    const cleaned = result.trim().replace(/```json|```/g, "");
+    const parsedJSONResult: AnalysisResult = JSON.parse(cleaned);
 
     return parsedJSONResult;
   } catch (error) {
