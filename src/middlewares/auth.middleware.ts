@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import prisma from "../client/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const requireAuth = (
+export const requireAuth = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,8 +14,16 @@ export const requireAuth = (
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
-
+  
   const token = authHeader.split(" ")[1];
+  const blacklisted = await prisma.blacklistedToken.findUnique({
+    where: { token },
+  });
+
+   if (blacklisted) {
+    return res.status(401).json({ message: "Token is revoked. Please sign in again." });
+  }
+  
   try {
     if (!JWT_SECRET) {
       return;
