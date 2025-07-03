@@ -1,7 +1,7 @@
 import { openai } from "../app";
+import prisma from "../client/prisma";
 
-//Add this later as param when implementing psql, userId: number,
-export const analyzeText = async (text: string) => {
+export const analyzeText = async (userId:string, text: string) => {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -21,13 +21,14 @@ export const analyzeText = async (text: string) => {
       temperature: 0.7,
     });
 
-    const result =
-      completion.choices[0].message?.content || "No result returned";
-
-    // Save to DB like before (i will use Prisma)
-    // await prisma.analysis.create({ data: { userId, text, result } });
+    const rawResult =
+      completion.choices[0].message?.content || "{}";
     
-    return JSON.parse(result);
+    const parsedResult = JSON.parse(rawResult);
+
+    await prisma.analysis.create({ data: { userId, text, result: parsedResult } });
+    
+    return parsedResult;
   } catch (error: any) {
     console.error("OpenAI API Error:", error.message);
     throw new Error("Failed to analyze text");

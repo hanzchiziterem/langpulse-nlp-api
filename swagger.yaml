@@ -7,23 +7,144 @@ info:
 servers:
   - url: http://localhost:5000
 
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
 paths:
-  /api/nlp/analyze:
+#   /api/v1/nlp/analyze:
+#     post:
+#       summary: Analyze text
+#       description: Accepts a string and returns sentiment, tone, and key topics in Parsed JSON.
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 text:
+#                   type: string
+#                   example: "I love using AI to solve problems!"
+#       responses:
+#         "200":
+#           description: Analysis result
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   result:
+#                     type: string
+#                     example: "Sentiment: Positive. Tone: Excited. Topics: AI, innovation."
+#         "400":
+#           description: Invalid input
+#         "500":
+#           description: Server error
+
+  /api/v1/auth/signup:
     post:
-      summary: Analyze text
-      description: Accepts a string and returns sentiment, tone, and key topics in Parsed JSON.
+      summary: Register a new user
+      tags:
+        - Auth
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: Hanz
+                email:
+                  type: string
+                  example: hanz@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        "200":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully
+        "400":
+          description: Invalid input or user already exists
+
+  /api/v1/auth/signin:
+    post:
+      summary: Login and get JWT token
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: hanz@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: Invalid credentials
+        "400":
+          description: Validation failed
+
+  /api/v1/nlp/analyze:
+    post:
+      summary: Analyze input text using NLP tools
+      tags:
+        - NLP
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
               properties:
                 text:
                   type: string
-                  example: "I love using AI to solve problems!"
+                  example: "AI is transforming the future of work and education."
       responses:
-        "200":
+        200:
           description: Analysis result
           content:
             application/json:
@@ -32,8 +153,62 @@ paths:
                 properties:
                   result:
                     type: string
-                    example: "Sentiment: Positive. Tone: Excited. Topics: AI, innovation."
-        "400":
-          description: Invalid input
-        "500":
-          description: Server error
+        401:
+          description: Unauthorized or invalid token
+
+  /api/v1/nlp/history:
+    get:
+      summary: Get analysis history for the logged-in user
+      tags:
+        - NLP
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of previous analysis results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    text:
+                      type: string
+                    result:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+        401:
+          description: Unauthorized or invalid token
+  /api/v1/nlp/export:
+    get:
+      summary: Download analysis history for the logged-in user
+      tags:
+        - NLP
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of previous analysis results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    text:
+                      type: string
+                    result:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+        401:
+          description: Unauthorized or invalid token
