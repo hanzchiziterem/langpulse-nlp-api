@@ -20,7 +20,7 @@ model User {
   password                     String
   verified                     Boolean   @default(false)
   verificationCode             String?  
-  verificationCodeValidation   Int?     
+  verificationCodeValidation   DateTime?     
   forgotPasswordCode           String?   
   forgotPasswordCodeValidation Int?    
   analyses                     Analysis[] 
