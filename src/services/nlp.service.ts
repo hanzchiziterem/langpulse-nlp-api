@@ -21,12 +21,14 @@ export const analyzeText = async (userId:string, text: string) => {
       temperature: 0.7,
     });
 
-    const result =
-      completion.choices[0].message?.content || "No result returned";
+    const rawResult =
+      completion.choices[0].message?.content || "{}";
     
-    await prisma.analysis.create({ data: { userId, text, result } });
+    const parsedResult = JSON.parse(rawResult);
+
+    await prisma.analysis.create({ data: { userId, text, result: parsedResult } });
     
-    return JSON.parse(result);
+    return parsedResult;
   } catch (error: any) {
     console.error("OpenAI API Error:", error.message);
     throw new Error("Failed to analyze text");
