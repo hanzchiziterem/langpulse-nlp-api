@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import prisma from "../lib/prisma";
+import prisma from "../client/prisma";
+import { hashPassowrd } from "../lib/hash-password";
+import { transporter } from "../lib/mailer";
+import { generateOTP } from "../utils/otp";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -10,13 +13,35 @@ export const signupUser = async (
   password: string
 ) => {
   const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) throw new Error("User already exists");
+  
+  if (existing) {
+    throw new Error("User already exists");
+  }
 
-  const hashed = await bcrypt.hash(password, 10);
+  const hashedPassowrd = await hashPassowrd(password, 10);
+
   const newUser = await prisma.user.create({
-    data: { name, email, password: hashed },
+    data: { name, email, password: hashedPassowrd },
   });
-  return { message: "User registered successfully." };
+
+  const code = generateOTP();
+  const expires = new Date(Date.now() + 10 * 60 * 1000); // expires in 10 mins
+
+  await prisma.user.update({
+    where:{id: newUser.id},
+      data: {
+      verificationCode: code,
+      verificationCodeValidation: expires,
+    },
+  });
+
+  await transporter.sendMail({
+    to: email,
+    subject: "Verify your Email.",
+    html: `<p>Your verification code is: <b>${code}</b></p>`
+  });
+  
+  return { success: true, message: "User created, Check your email for a verification code." };
 };
 
 export const signinUser = async (email: string, password: string) => {
