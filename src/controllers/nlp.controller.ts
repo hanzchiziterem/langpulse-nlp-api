@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { analyzeText } from "../services/nlp.service";
 import { inputSchema } from "../schemas/input.schema";
-import prisma from "../lib/prisma";
+import prisma from "../client/prisma";
 
 export const analyzeTextHandler = async (req: Request, res: Response) => {
   const {text} = req.body;
@@ -20,6 +20,7 @@ export const analyzeTextHandler = async (req: Request, res: Response) => {
 };
 
 export const getAnalysisHistory = async (req: Request, res: Response) => {
+try {
   const user = (req as any).user;
 
   const history = await prisma.analysis.findMany({
@@ -27,10 +28,14 @@ export const getAnalysisHistory = async (req: Request, res: Response) => {
     orderBy: { createdAt: 'desc' },
   });
 
-  res.json(history);
+  res.status(200).json({success: true, data: history});
+  
+} catch (error) {
+     console.error(error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+}
 }
 
-// Not tested
 export const downloadAnalysisHistory = async (req: Request, res: Response) => {
 const user = (req as any).user;
 
