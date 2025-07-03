@@ -1,5 +1,5 @@
 import { openai } from "../app";
-import prisma from "../lib/prisma";
+import prisma from "../client/prisma";
 
 export const analyzeText = async (userId:string, text: string) => {
   try {
