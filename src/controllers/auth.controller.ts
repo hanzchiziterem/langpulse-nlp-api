@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import { signinSchema, signupSchema } from "../schemas/auth.schema";
 import { signinUser, signupUser } from "../services/auth.service";
 import prisma from "../client/prisma";
@@ -44,7 +45,38 @@ export const signinHandler = async (req: Request, res: Response) => {
   }
 };
 
-// export const signoutHandler = async (req: Request, res: Response) => {};
+export const signoutHandler = async (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(400).json({ success: false, message: "No token provided." });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.decode(token) as any;
+
+    if (!decoded || !decoded.exp) {
+      return res.status(400).json({ success: false, message: "Invalid token." });
+    }
+
+    const expiresAt = new Date(decoded.exp * 1000);
+
+    await prisma.blacklistedToken.create({
+      data: {
+        token,
+        expiresAt,
+      },
+    });
+
+    return res.status(200).json({ success: true, message: "Signed out successfully." });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Something went wrong." });
+  }
+};
 
 export const verifyEmail = async (req: Request, res: Response) => {
   const { code } = req.query;
