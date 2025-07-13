@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import OpenAI from "openai";
@@ -20,6 +21,7 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 //Middlewares
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser());
 
 //Routes
 app.use('/api/v1', v1Routes);
