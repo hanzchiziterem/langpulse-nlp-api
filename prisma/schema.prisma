@@ -24,7 +24,7 @@ model User {
   verificationCode             String?
   verificationCodeValidation   DateTime?
   forgotPasswordCode           String?
-  forgotPasswordCodeValidation Int?
+  forgotPasswordCodeValidation DateTime?
   analyses                     Analysis[]
   createdAt                    DateTime   @default(now())
   updatedAt                    DateTime   @updatedAt
