@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { signinSchema, signupSchema } from "../schemas/auth.schema";
-import { signinUser, signupUser } from "../services/auth.service";
+import bcrypt from "bcrypt";
+import { refreshAccessToken } from "../services/auth.service";
 import prisma from "../client/prisma";
+import { signinSchema, signupSchema } from "../schemas/auth.schema";
+import { signinUser, signupUser, signoutUser } from "../services/auth.service";
 import { transporter } from "../lib/mailer";
 import { generateOTP, verifyOTP } from "../utils/otp";
+import { hashPassowrd } from "../lib/hash-password";
 
 export const signupHandler = async (req: Request, res: Response) => {
   const valid = signupSchema.safeParse(req.body);
@@ -26,55 +29,100 @@ export const signupHandler = async (req: Request, res: Response) => {
 
 export const signinHandler = async (req: Request, res: Response) => {
   const valid = signinSchema.safeParse(req.body);
+
   if (!valid.success) {
     res.status(400).json(valid.error.format());
     return;
   }
 
   try {
-    const result = await signinUser(valid.data.email, valid.data.password);
-    res
+    const { accessToken, refreshToken } = await signinUser(
+      valid.data.email,
+      valid.data.password
+    );
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User has signed in successfully.",
+      accessToken,
+    });
+    return;
+  } catch (err) {
+    console.error(err);
+    res.status(401).json({ error: (err as Error).message });
+    return;
+  }
+};
+
+export const refreshTokenHandler = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const token: string | undefined = req.cookies?.refreshToken;
+
+  if (!token) {
+    return res.status(401).json({ message: "No refresh token provided" });
+  }
+
+  try {
+    const { newAccessToken, newRefreshToken } = await refreshAccessToken(token);
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    return res
       .status(200)
       .json({
         success: true,
-        message: "User has sigined in successfully.",
-        data: result,
+        message: "Token refreshed successfully.",
+        accessToken: newAccessToken,
       });
-  } catch (err: any) {
-    res.status(401).json({ error: err.message });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(403)
+      .json({ message: (err as Error).message || "Forbidden" });
   }
 };
 
 export const signoutHandler = async (req: Request, res: Response) => {
-  const authHeader = req.headers.authorization;
+  const refreshToken: string | undefined = req.cookies?.refreshToken;
 
-  if (!authHeader) {
-    return res.status(400).json({ success: false, message: "No token provided." });
+  if (!refreshToken) {
+    res
+      .status(400)
+      .json({ success: false, message: "No refresh token provided." });
+    return;
   }
 
-  const token = authHeader.split(" ")[1];
-
   try {
-    const decoded = jwt.decode(token) as any;
+    await signoutUser(refreshToken);
 
-    if (!decoded || !decoded.exp) {
-      return res.status(400).json({ success: false, message: "Invalid token." });
-    }
-
-    const expiresAt = new Date(decoded.exp * 1000);
-
-    await prisma.blacklistedToken.create({
-      data: {
-        token,
-        expiresAt,
-      },
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
     });
 
-    return res.status(200).json({ success: true, message: "Signed out successfully." });
-
+    res
+      .status(200)
+      .json({ success: true, message: "Signed out successfully." });
+    return;
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: "Something went wrong." });
+    res.status(400).json({ success: false, message: (error as Error).message });
+    return;
   }
 };
 
@@ -156,4 +204,3 @@ export const resendVerification = async (req: Request, res: Response) => {
 
   res.status(200).json({ success: true, message: "A new code has been sent." });
 };
-
