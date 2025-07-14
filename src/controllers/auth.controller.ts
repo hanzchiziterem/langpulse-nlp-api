@@ -64,11 +64,12 @@ export const signinHandler = async (req: Request, res: Response) => {
 export const refreshTokenHandler = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<void> => {
   const token: string | undefined = req.cookies?.refreshToken;
 
   if (!token) {
-    return res.status(401).json({ message: "No refresh token provided" });
+    res.status(401).json({ message: "No refresh token provided" });
+    return;
   }
 
   try {
@@ -81,22 +82,23 @@ export const refreshTokenHandler = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Token refreshed successfully.",
-        accessToken: newAccessToken,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Token refreshed successfully.",
+      accessToken: newAccessToken,
+    });
   } catch (err) {
     console.error(err);
-    return res
+    res
       .status(403)
-      .json({ message: (err as Error).message || "Forbidden" });
+      .json({ success: false, message: (err as Error).message || "Forbidden" });
   }
 };
 
-export const signoutHandler = async (req: Request, res: Response) => {
+export const signoutHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const refreshToken: string | undefined = req.cookies?.refreshToken;
 
   if (!refreshToken) {
@@ -126,13 +128,15 @@ export const signoutHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyEmail = async (req: Request, res: Response) => {
+export const verifyEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { code } = req.query;
 
   if (!code) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Code is required." });
+    res.status(400).json({ success: false, message: "Code is required." });
+    return;
   }
 
   const cleanCode = Array.isArray(code) ? code[0] : (code as string);
@@ -142,12 +146,14 @@ export const verifyEmail = async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    return res.status(400).json({ success: false, message: "Invalid code." });
+    res.status(400).json({ success: false, message: "Invalid code." });
+    return;
   }
 
   const isValid = verifyOTP(user.verificationCodeValidation);
   if (!isValid) {
-    return res.status(400).json({ success: false, message: "Code expired." });
+    res.status(400).json({ success: false, message: "Code expired." });
+    return;
   }
 
   await prisma.user.update({
@@ -162,27 +168,29 @@ export const verifyEmail = async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: "Email has been verified!" });
 };
 
-export const resendVerification = async (req: Request, res: Response) => {
+export const resendVerification = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { email } = req.body;
   //Remeber to add check if this is a valid email
   //then check if email exists
 
   if (!email) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email is required." });
+    res.status(400).json({ success: false, message: "Email is required." });
+    return;
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    return res.status(400).json({ success: false, message: "User not found." });
+    res.status(400).json({ success: false, message: "User not found." });
+    return;
   }
 
   if (user.verified) {
-    return res
-      .status(400)
-      .json({ success: false, message: "User already verified." });
+    res.status(400).json({ success: false, message: "User already verified." });
+    return;
   }
 
   const newCode = generateOTP();
@@ -205,16 +213,21 @@ export const resendVerification = async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: "A new code has been sent." });
 };
 
-export const forgotPassword = async (req: Request, res: Response): Promise<Response> => {
+export const forgotPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { email } = req.body;
 
   if (!email) {
-    return res.status(400).json({ success: false, message: "Email is required." });
+    res.status(400).json({ success: false, message: "Email is required." });
+    return;
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return res.status(404).json({ success: false, message: "User not found." });
+    res.status(404).json({ success: false, message: "User not found." });
+    return;
   }
 
   const code = generateOTP();
@@ -234,20 +247,25 @@ export const forgotPassword = async (req: Request, res: Response): Promise<Respo
     html: `<p>Here’s your reset code: <b>${code}</b></p>`,
   });
 
-  return res.json({ success: true, message: "Reset code sent to your email." });
+  res.json({ success: true, message: "Reset code sent to your email." });
 };
 
-export const resendForgotPassword = async (req: Request, res: Response): Promise<Response> => {
+export const resendForgotPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { email } = req.body;
 
   if (!email) {
-    return res.status(400).json({ success: false, message: "Email is required." });
+    res.status(400).json({ success: false, message: "Email is required." });
+    return;
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    return res.status(404).json({ success: false, message: "User not found." });
+    res.status(404).json({ success: false, message: "User not found." });
+    return;
   }
 
   const newCode = generateOTP();
@@ -267,24 +285,41 @@ export const resendForgotPassword = async (req: Request, res: Response): Promise
     html: `<p>Your new reset code is: <b>${newCode}</b>. It expires in 10 minutes.</p>`,
   });
 
-  return res.json({ success: true, message: "New reset code sent to your email." });
+  res.json({
+    success: true,
+    message: "New reset code sent to your email.",
+  });
 };
 
-export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
+export const resetPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { code, newPassword } = req.body;
 
   if (!code || !newPassword) {
-    return res.status(400).json({ success: false, message: "Code and new password are required." });
+    res
+      .status(400)
+      .json({ success: false, message: "Code and new password are required." });
+    return;
   }
 
-  const user = await prisma.user.findFirst({ where: { forgotPasswordCode: code } });
+  const user = await prisma.user.findFirst({
+    where: { forgotPasswordCode: code },
+  });
 
   if (!user) {
-    return res.status(400).json({ success: false, message: "Invalid reset code." });
+    res.status(400).json({ success: false, message: "Invalid reset code." });
+    return;
   }
 
-  if (user.forgotPasswordCodeValidation && user.forgotPasswordCodeValidation < new Date()) {
-    return res.status(400).json({ success: false, message: "Reset code expired." });
+  if (
+    user.forgotPasswordCodeValidation &&
+    user.forgotPasswordCodeValidation < new Date()
+  ) {
+    res.status(400).json({ success: false, message: "Reset code expired." });
+
+    return;
   }
 
   const hashed = await bcrypt.hash(newPassword, 10);
@@ -298,25 +333,39 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
     },
   });
 
-  return res.json({ success: true, message: "Password has been reset successfully." });
+  res.json({
+    success: true,
+    message: "Password has been reset successfully.",
+  });
 };
 
-export const changePassword = async (req: Request, res: Response): Promise<Response> => {
+export const changePassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const userId: string = (req as any).user.id;
   const { oldPassword, newPassword } = req.body;
 
   if (!oldPassword || !newPassword) {
-    return res.status(400).json({ success: false, message: "Both old and new passwords are required." });
+    res.status(400).json({
+      success: false,
+      message: "Both old and new passwords are required.",
+    });
+    return;
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {
-    return res.status(404).json({ success: false, message: "User not found." });
+    res.status(404).json({ success: false, message: "User not found." });
+    return;
   }
 
   const isMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isMatch) {
-    return res.status(400).json({ success: false, message: "Old password is incorrect." });
+    res
+      .status(400)
+      .json({ success: false, message: "Old password is incorrect." });
+    return;
   }
 
   const hashed = await bcrypt.hash(newPassword, 10);
@@ -326,5 +375,5 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     data: { password: hashed },
   });
 
-  return res.json({ success: true, message: "Password changed successfully." });
+  res.json({ success: true, message: "Password changed successfully." });
 };

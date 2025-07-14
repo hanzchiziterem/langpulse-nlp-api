@@ -17,11 +17,8 @@ const router = Router();
 
 router.post("/signup", signupHandler);
 router.post("/signin", signinHandler);
-//Fix no overload error
 router.post("/refresh", refreshTokenHandler);
 router.post("/signout", signoutHandler);
-
-//Fix no overload error for all below
 router.get('/verify', verifyEmail);
 router.post('/resend-email-verification', resendVerification);
 router.post('/forgot-password', forgotPassword);
