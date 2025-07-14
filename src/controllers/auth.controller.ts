@@ -204,3 +204,127 @@ export const resendVerification = async (req: Request, res: Response) => {
 
   res.status(200).json({ success: true, message: "A new code has been sent." });
 };
+
+export const forgotPassword = async (req: Request, res: Response): Promise<Response> => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Email is required." });
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found." });
+  }
+
+  const code = generateOTP();
+  const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      forgotPasswordCode: code,
+      forgotPasswordCodeValidation: expires,
+    },
+  });
+
+  await transporter.sendMail({
+    to: email,
+    subject: "Reset your password",
+    html: `<p>Here’s your reset code: <b>${code}</b></p>`,
+  });
+
+  return res.json({ success: true, message: "Reset code sent to your email." });
+};
+
+export const resendForgotPassword = async (req: Request, res: Response): Promise<Response> => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Email is required." });
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found." });
+  }
+
+  const newCode = generateOTP();
+  const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      forgotPasswordCode: newCode,
+      forgotPasswordCodeValidation: expires,
+    },
+  });
+
+  await transporter.sendMail({
+    to: email,
+    subject: "Your new password reset code",
+    html: `<p>Your new reset code is: <b>${newCode}</b>. It expires in 10 minutes.</p>`,
+  });
+
+  return res.json({ success: true, message: "New reset code sent to your email." });
+};
+
+export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
+  const { code, newPassword } = req.body;
+
+  if (!code || !newPassword) {
+    return res.status(400).json({ success: false, message: "Code and new password are required." });
+  }
+
+  const user = await prisma.user.findFirst({ where: { forgotPasswordCode: code } });
+
+  if (!user) {
+    return res.status(400).json({ success: false, message: "Invalid reset code." });
+  }
+
+  if (user.forgotPasswordCodeValidation && user.forgotPasswordCodeValidation < new Date()) {
+    return res.status(400).json({ success: false, message: "Reset code expired." });
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashed,
+      forgotPasswordCode: null,
+      forgotPasswordCodeValidation: null,
+    },
+  });
+
+  return res.json({ success: true, message: "Password has been reset successfully." });
+};
+
+export const changePassword = async (req: Request, res: Response): Promise<Response> => {
+  const userId: string = (req as any).user.id;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ success: false, message: "Both old and new passwords are required." });
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found." });
+  }
+
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ success: false, message: "Old password is incorrect." });
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashed },
+  });
+
+  return res.json({ success: true, message: "Password changed successfully." });
+};
