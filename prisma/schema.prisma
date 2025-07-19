@@ -55,8 +55,8 @@ model UserSettings {
 
 model SecurityLog {
   id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   eventType String
   ipAddress String
   userAgent String
