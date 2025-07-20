@@ -20,8 +20,10 @@ model User {
   name                         String
   email                        String        @unique
   password                     String
-  refreshToken                 String?
   verified                     Boolean       @default(false)
+  isActive                     Boolean       @default(true)
+  refreshToken                 String?
+  tokenVersion                 Int           @default(0)
   verificationCode             String?
   verificationCodeValidation   DateTime?
   forgotPasswordCode           String?
@@ -54,11 +56,20 @@ model UserSettings {
   language String @default("en")
 }
 
+enum SeverityLevel {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+  DEBUG
+}
 model SecurityLog {
   id        String   @id @default(uuid())
   userId    String?
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   eventType String
+  severity SeverityLevel @default(MEDIUM)
   ipAddress String
   userAgent String
   metadata  Json?
