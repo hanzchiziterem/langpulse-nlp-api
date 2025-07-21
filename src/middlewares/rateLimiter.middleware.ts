@@ -1,10 +1,10 @@
 import rateLimit from "express-rate-limit";
 import {Response } from "express";
-import { logSecurityEvent } from "../libs/logging/securityEvents";
-import { getIdentifier } from "../utils/getIdentifier";
-import { AuthenticatedRequest } from "../interfaces/auth.interface";
+import { logSecurityEvent } from "../libs/logging";
+import { getIdentifier } from "../utils/auth";
+import { AuthenticatedRequest } from "../types/auth";
 import { SECURITY_EVENT, SEVERITY } from "../types/security";
-import { RequestEventMetadata } from "../types/security/metadata.interface";
+import { RequestEventMetadata } from "../types/security";
 
 
 

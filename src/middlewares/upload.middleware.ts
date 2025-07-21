@@ -1,6 +1,6 @@
 import multer from 'multer';
 import path from 'path';
-import { ensureUploadsDirExists } from '../utils/fileHelper';
+import { ensureUploadsDirExists } from '../utils/cloudinary/fileHelper';
 
 const uploadsDir = ensureUploadsDirExists();
 
@@ -26,6 +26,6 @@ const fileFilter = (req:any, file:any, cb:any) => {
 
 export const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter
-}).single('profileImage'); // This is the key line - expects single file in 'image' field
+}).single('profileImage'); 
