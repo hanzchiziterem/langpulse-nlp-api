@@ -1,5 +1,5 @@
-import { calculatePasswordStrength } from "./calculatePasswordStrength.ts";
-import { getPasswordStrengthLevel } from "./getPasswordStrengthLevel.js";
+import { calculatePasswordStrength } from "./calculatePasswordStrength"
+import { getPasswordStrengthLevel } from "./getPasswordStrengthLevel"
 
 export {
     calculatePasswordStrength,
