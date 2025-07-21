@@ -1,6 +1,7 @@
 import { SECURITY_EVENT } from "./events.consts";
 import {
   AuthEventMetadata,
+  RequestEventMetadata,
   TokenEventMetadata,
   EmailVerificationEventMetadata,
   PasswordEventMetadata,
@@ -76,6 +77,7 @@ export type SecurityEventMetadataUnion =
 
 export {
   AuthEventMetadata,
+  RequestEventMetadata,
   TokenEventMetadata,
   EmailVerificationEventMetadata,
   PasswordEventMetadata,
