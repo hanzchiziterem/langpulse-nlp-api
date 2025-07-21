@@ -4,7 +4,6 @@ import prisma from "../client/prisma";
 import { transporter } from "../libs/mailer";
 import { generateOTP } from "../utils/otp";
 import { logSecurityEvent } from "../libs/logging/securityEvents";
-
 import {
   AuthEventMetadata,
   PasswordEventMetadata,
@@ -14,7 +13,6 @@ import {
   UserEventMetadata,
 } from "../types/security";
 import { calculatePasswordStrength, getPasswordStrengthLevel } from "../utils/password";
-// import { IncomingJwtPayloadToken } from "../types/token/jwtPayload";
 import { hashPassword } from "../libs/auth/password";
 import { JwtPayload } from "../types/auth";
 
