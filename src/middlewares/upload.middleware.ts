@@ -1,6 +1,6 @@
 import multer from 'multer';
 import path from 'path';
-import { ensureUploadsDirExists } from '../utils/cloudinary/fileHelper';
+import { ensureUploadsDirExists } from '../utils/cloudinary';
 
 const uploadsDir = ensureUploadsDirExists();
 
