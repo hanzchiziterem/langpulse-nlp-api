@@ -1,7 +1,16 @@
 import { openai } from "../app";
 import prisma from "../client/prisma";
 
-export const analyzeText = async (userId:string, text: string) => {
+interface AnalysisResult {
+  sentiment: string;
+  tone: string;
+  topics: string[];
+}
+
+export const analyzeText = async (
+  userId: string,
+  text: string
+): Promise<AnalysisResult> => {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -9,8 +18,8 @@ export const analyzeText = async (userId:string, text: string) => {
         {
           role: "user",
           content: `Analyze this text: "${text}". 
-          make sure to give me the sentiment (positive/neutral/negative), tone, and key topics.
-          Return the result as JSON like this:
+          Give me sentiment, tone, key topics.
+          Return JSON:
           {
             "sentiment": "...",
             "tone": "...", 
@@ -20,7 +29,6 @@ export const analyzeText = async (userId:string, text: string) => {
       ],
       temperature: 0.7,
     });
-
     const rawResult =
       completion.choices[0].message?.content || "{}";
     

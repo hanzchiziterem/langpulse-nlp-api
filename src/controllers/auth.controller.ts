@@ -126,7 +126,7 @@ export const signinHandler = async (req: Request, res: Response) => {
       metadata: {
         authMethod: "password",
         session: {
-          durationHours: 24 * 7, // 1 week
+          durationHours: 24 * 7,
         },
       } as AuthEventMetadata,
     });

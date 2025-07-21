@@ -174,7 +174,6 @@ export const requireAuth = async (
       id: user.id,
       tokenIssuedAt: decoded.iat,
     } as ExpressUser;
-
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
