@@ -12,13 +12,13 @@ import { refreshAccessToken } from "../services/auth.service";
 import { transporter } from "../libs/mailer";
 import { generateOTP, verifyOTP } from "../utils/otp";
 import { logSecurityEvent } from "../libs/logging";
-import { getUserIdFromToken } from "../utils/token";
+import { getUserIdFromToken } from "../utils/auth";
 import { getFriendlyError } from "../utils/getFriendlyError";
 import {
   calculatePasswordStrength,
   getPasswordStrengthLevel,
 } from "../utils/password";
-import { SECURITY_EVENT } from "../types/security/events.consts";
+import { SECURITY_EVENT } from "../types/security";
 import { SEVERITY } from "../types/security";
 import {
   AuthEventMetadata,
