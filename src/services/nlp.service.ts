@@ -1,5 +1,5 @@
 import { openai } from "../app";
-import prisma from "../lib/prisma";
+import prisma from "../client/prisma";
 
 interface AnalysisResult {
   sentiment: string;
@@ -29,22 +29,16 @@ export const analyzeText = async (
       ],
       temperature: 0.7,
     });
+    const rawResult =
+      completion.choices[0].message?.content || "{}";
+    
+    const parsedResult = JSON.parse(rawResult);
 
-    const result =
-      completion.choices[0].message?.content || "No result returned";
-
-    await prisma.analysis.create({ data: { userId, text, result } });
-
-    const cleaned = result.trim().replace(/```json|```/g, "");
-    const parsedJSONResult: AnalysisResult = JSON.parse(cleaned);
-
-    return parsedJSONResult;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("OpenAI API Error: ", error.message);
-    } else {
-      console.log("Unknown Error: ", error);
-    }
-    throw new Error("Failed to analyze text.");
+    await prisma.analysis.create({ data: { userId, text, result: parsedResult } });
+    
+    return parsedResult;
+  } catch (error: any) {
+    console.error("OpenAI API Error:", error.message);
+    throw new Error("Failed to analyze text");
   }
 };
