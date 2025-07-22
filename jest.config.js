@@ -1,21 +1,31 @@
 module.exports = {
-  preset: 'ts-jest', // Specifies that ts-jest should be used for TypeScript files
-  testEnvironment: 'node', // Defines the environment in which tests run (e.g., 'node' for server-side, 'jsdom' for browser-like)
-  // Optional configurations:
-  testMatch: [
-    '**/__tests__/**/*.ts', // Glob pattern for detecting test files
-    '**/?(*.)+(spec|test).ts'
-  ],
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'], // File extensions Jest should look for
-  collectCoverage: true, // Enables code coverage collection
-  coverageDirectory: 'coverage', // Directory for coverage reports
+  preset: "ts-jest",
+  testEnvironment: "node",
+  rootDir: ".",
+  testRegex: ".*\\.(spec|test)\\.ts$",
+  transform: {
+    "^.+\\.(t|j)s$": "ts-jest",
+  },
+  moduleFileExtensions: ["ts", "js", "json", "node"],
+  collectCoverage: true,
+  coverageDirectory: "coverage",
   collectCoverageFrom: [
-    'src/**/*.ts', // Specifies files from which to collect coverage
-    '!src/**/*.d.ts' // Excludes declaration files
+    "src/**/*.ts",
+    "!src/**/*.d.ts",
+    "!src/**/index.ts",
+    "!src/**/*.interface.ts", 
   ],
-  // You can add more configurations as needed, such as:
-  // moduleNameMapper: { // For mapping module paths (e.g., handling aliases)
-  //   '^@/(.*)$': '<rootDir>/src/$1',
-  // },
-  // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'], // For setting up the testing environment before each test suite
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+  clearMocks: true,
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  coverageThreshold: { 
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
 };
