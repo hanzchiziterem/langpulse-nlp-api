@@ -19,6 +19,7 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   clearMocks: true,
+  setupFiles: ['<rootDir>/jest.setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   coverageThreshold: { 
     global: {
