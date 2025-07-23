@@ -90,9 +90,24 @@ export interface EmailVerificationEventMetadata
   extends BaseSecurityEventMetadata {
   email?: string;
   verificationMethod?: "otp" | "link";
-  codeExpiresAt?: Date;
+  emailVerified?: string;
   attemptsRemaining?: number;
-  failureReason?: "invalid_code" | "expired_code" | "max_attempts";
+  code: {
+    expiresAt?: Date;
+  };
+  failure: {
+    reason:
+      | "invalid_code"
+      | "missing_email"
+      | "missing_verification_code"
+      | "expired_verification_code"
+      | "invalid_verification_code"
+      | "expired_code"
+      | "max_attempts"
+      | "email_already_verified";
+    codeExpiresAt?: Date | null;
+  };
+  codeAttempted?: string;
   isResend?: boolean;
 }
 
