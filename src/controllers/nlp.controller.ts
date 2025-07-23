@@ -2,7 +2,7 @@ import {Request, Response } from "express";
 import prisma from "../lib/prisma";
 import { analyzeText } from "../services/nlp.service";
 import { inputSchema } from "../schemas/input.schema";
-import { AnalyzeInput } from "../types/nlp";
+import prisma from "../client/prisma";
 
 export const analyzeTextHandler = async (
   req: Request<{}, {}, AnalyzeInput>,
@@ -23,19 +23,26 @@ export const analyzeTextHandler = async (
   }
 };
 
-export const getAnalysisHistory = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getAnalysisHistory = async (req: Request, res: Response) => {
+try {
+  const user = (req as any).user;
   const history = await prisma.analysis.findMany({
     where: { userId: req.user!.id },
     orderBy: { createdAt: "desc" },
   });
 
-  res.json(history);
-};
+  res.status(200).json({success: true, data: history});
+  
+} catch (error) {
+     console.error(error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+}
+}
 
-export const downloadAnalysisHistory = async (
+export const downloadAnalysisHistory = async (req: Request, res: Response) => {
+const user = (req as any).user;
+
+  export const downloadAnalysisHistory = async (
   req: Request,
   res: Response
 ): Promise<void> => {

@@ -15,19 +15,63 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  analyses  Analysis[]
-  createdAt DateTime   @default(now())
+  id                           String        @id @default(uuid())
+  profileImage                 String?
+  name                         String
+  email                        String        @unique
+  password                     String
+  verified                     Boolean       @default(false)
+  isActive                     Boolean       @default(true)
+  refreshToken                 String?
+  tokenVersion                 Int           @default(0)
+  verificationCode             String?
+  verificationCodeValidation   DateTime?
+  forgotPasswordCode           String?
+  forgotPasswordCodeValidation DateTime?
+  failedAttempts               Int           @default(0)
+  lastFailedAttempt            DateTime?
+  twoFactorSecret              String?
+  securityLogs                 SecurityLog[]
+  analyses                     Analysis[]
+  settings                     UserSettings?
+  createdAt                    DateTime      @default(now())
+  updatedAt                    DateTime      @updatedAt
+  passwordChangedAt            DateTime?
+  lastSignoutAt                DateTime?
 }
 
 model Analysis {
   id        String   @id @default(uuid())
   text      String
-  result    String
+  result    Json
   user      User     @relation(fields: [userId], references: [id])
   userId    String
+  createdAt DateTime @default(now())
+}
+
+model UserSettings {
+  id       String @id @default(uuid())
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id])
+  language String @default("en")
+}
+
+enum SeverityLevel {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+  DEBUG
+}
+model SecurityLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventType String
+  severity SeverityLevel @default(MEDIUM)
+  ipAddress String
+  userAgent String
+  metadata  Json?
   createdAt DateTime @default(now())
 }
