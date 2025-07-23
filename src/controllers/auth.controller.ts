@@ -26,7 +26,7 @@ import {
   EmailVerificationEventMetadata,
   UserEventMetadata,
   PasswordEventMetadata,
-} from "../types/security";
+} from "@/types/security";
 
 export const signupHandler = async (req: Request, res: Response) => {
   const valid = signupSchema.safeParse(req.body);
@@ -177,6 +177,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
       success: false,
       message: "Refresh token required.",
     });
+    return;
   }
 
   try {
