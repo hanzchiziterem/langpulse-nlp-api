@@ -3,7 +3,7 @@ import { Config } from "jest";
 const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
-  rootDir: ".",
+  rootDir: "./",
   testRegex: ".*\\.(spec|test)\\.ts$",
   transform: {
     "^.+\\.(t|j)s$": "ts-jest",
@@ -18,19 +18,25 @@ const config: Config = {
     "!src/**/*.interface.ts",
   ],
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1",
+    "^@/(.*)$": ["<rootDir>/src/$1"],
   },
 
   moduleDirectories: ["node_modules", "src"],
   clearMocks: true,
   setupFiles: ["<rootDir>/jest.setup.ts"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+  globals: {
+    "ts-jest": {
+      tsconfig: "tsconfig.json",
+    },
+    testMatch: ["**/__tests__/**/*.test.ts"],
+    coverageThreshold: {
+      global: {
+        branches: 80,
+        functions: 80,
+        lines: 80,
+        statements: 80,
+      },
     },
   },
 };
