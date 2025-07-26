@@ -5,6 +5,9 @@ const mockPrisma = {
     findFirst: jest.fn(),
     update: jest.fn(),
   },
+  securityEvent: {
+    create: jest.fn(), 
+  },
   $disconnect: jest.fn(),
 };
 
