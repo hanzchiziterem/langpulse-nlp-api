@@ -1,5 +1,6 @@
 import mockPrisma from "@/__tests__/__mocks__/prisma";
 
+
 jest.mock("@/client/prisma", () => ({
   __esModule: true,
   default: mockPrisma,
@@ -17,7 +18,7 @@ const mockBcrypt = {
 };
 jest.mock("bcrypt", () => mockBcrypt);
 
-jest.mock("@/utils/security/passwordStrength", () => ({
+jest.mock("@/utils/password", () => ({
   __esModule: true,
   calculatePasswordStrength: () => 85,
   getPasswordStrengthLevel: () => "strong",
