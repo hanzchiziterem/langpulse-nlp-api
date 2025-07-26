@@ -9,7 +9,7 @@ import {
   resetPassowrd,
 } from "../services/auth.service";
 import { refreshAccessToken } from "../services/auth.service";
-import { transporter } from "../libs/mailer";
+import  transporter  from "../libs/mailer";
 import { generateOTP, verifyOTP } from "../utils/otp";
 import { logSecurityEvent } from "../libs/logging";
 import { getUserIdFromToken } from "../utils/auth";

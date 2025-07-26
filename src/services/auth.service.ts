@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import jwt, { Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import prisma from "../client/prisma";
-import { transporter } from "../libs/mailer";
+import  transporter  from "../libs/mailer";
 import { generateOTP } from "../utils/otp";
 import { logSecurityEvent } from "../libs/logging/securityEvents";
 import {
@@ -12,9 +12,12 @@ import {
   TokenEventMetadata,
   UserEventMetadata,
 } from "../types/security";
-import { calculatePasswordStrength, getPasswordStrengthLevel } from "../utils/password";
+import {
+  calculatePasswordStrength,
+  getPasswordStrengthLevel,
+} from "../utils/password";
 import { hashPassword } from "../libs/auth/password";
-import { JwtPayload } from "../types/auth";
+import { JwtPayload } from "../types/auth/token.interface";
 
 const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;
 const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET;
@@ -345,13 +348,13 @@ export const signoutUser = async (refreshToken: string): Promise<string> => {
     },
   });
 
-   await logSecurityEvent({
+  await logSecurityEvent({
     userId: user.id,
     eventType: SECURITY_EVENT.AUTH.SIGNOUT_SUCCESS,
     severity: SEVERITY.INFO,
     metadata: {
-      sessionEndMethod: 'user_initiated'
-    } as AuthEventMetadata
+      sessionEndMethod: "user_initiated",
+    } as AuthEventMetadata,
   });
 
   return payload.id;
@@ -359,7 +362,7 @@ export const signoutUser = async (refreshToken: string): Promise<string> => {
 
 export const resetPassowrd = async (userId: string, newPassword: string) => {
   const newHashedPassword = await hashPassword(newPassword);
-  
+
   await prisma.user.update({
     where: { id: userId },
     data: {
@@ -370,20 +373,20 @@ export const resetPassowrd = async (userId: string, newPassword: string) => {
       refreshToken: null,
     },
   });
-  
-    const strengthScore = calculatePasswordStrength(newPassword);
-    const strengthLevel = getPasswordStrengthLevel(strengthScore);
+
+  const strengthScore = calculatePasswordStrength(newPassword);
+  const strengthLevel = getPasswordStrengthLevel(strengthScore);
   await logSecurityEvent({
     userId,
     eventType: SECURITY_EVENT.PASSWORD.RESET_SUCCESS,
     severity: SEVERITY.INFO,
     metadata: {
-      operationType: 'reset',
+      operationType: "reset",
       strength: {
         score: strengthScore,
         level: strengthLevel,
         isAcceptable: strengthScore > 70,
-      }
-    } as PasswordEventMetadata
+      },
+    } as PasswordEventMetadata,
   });
 };
