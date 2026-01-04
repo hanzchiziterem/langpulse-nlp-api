@@ -9,7 +9,7 @@ import {
   resetPassowrd,
 } from "../services/auth.service";
 import { refreshAccessToken } from "../services/auth.service";
-import { transporter } from "../libs/mailer";
+import  transporter  from "../libs/mailer";
 import { generateOTP, verifyOTP } from "../utils/otp";
 import { logSecurityEvent } from "../libs/logging";
 import { getUserIdFromToken } from "../utils/auth";
@@ -26,7 +26,8 @@ import {
   EmailVerificationEventMetadata,
   UserEventMetadata,
   PasswordEventMetadata,
-} from "../types/security";
+} from "@/types/security";
+import { codeSchema } from "@/schemas/verifyEmail.schema";
 
 export const signupHandler = async (req: Request, res: Response) => {
   const valid = signupSchema.safeParse(req.body);
@@ -177,6 +178,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
       success: false,
       message: "Refresh token required.",
     });
+    return;
   }
 
   try {
@@ -303,10 +305,11 @@ export const signoutHandler = async (
     });
   }
 };
-export const verifyEmail = async (req: Request, res: Response) => {
-  const { code } = req.query;
 
-  if (!code) {
+export const verifyEmail = async (req: Request, res: Response) => {
+  const valid = codeSchema.safeParse(req.query);
+
+  if (!valid.success) {
     await logSecurityEvent({
       userId: null,
       eventType: SECURITY_EVENT.EMAIL_VERIFICATION.MISSING_CODE,
@@ -321,10 +324,28 @@ export const verifyEmail = async (req: Request, res: Response) => {
     return;
   }
 
-  const cleanCode = Array.isArray(code) ? code[0] : (code as string);
+  const cleanCode = Array.isArray(valid.data.code) ? valid.data.code[0] : valid.data.code;
   const user = await prisma.user.findFirst({
     where: { verificationCode: cleanCode },
   });
+
+  
+if (user && user.verified) {
+  await logSecurityEvent({
+    userId: user?.id ?? null,
+    eventType: SECURITY_EVENT.EMAIL_VERIFICATION.ALREADY_VERIFIED,
+    severity: SEVERITY.MEDIUM,
+    metadata: {
+        failure: {
+          reason: "email_already_verified",
+        }
+    } as EmailVerificationEventMetadata
+
+  })
+  res.status(409).json({ success: false, message: "Email already verified." });
+  return;
+}
+
 
   if (!user) {
     await logSecurityEvent({
@@ -353,7 +374,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
       metadata: {
         failure: {
           reason: "expired_verification_code",
-          codeExpiredAt: user.verificationCodeValidation,
+          codeExpiresAt: user.verificationCodeValidation,
         },
       } as EmailVerificationEventMetadata,
     });

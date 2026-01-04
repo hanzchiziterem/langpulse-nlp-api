@@ -4,7 +4,7 @@ import { logSecurityEvent } from "../libs/logging";
 import prisma from "../client/prisma";
 import { JwtPayload } from "../types/auth";
 import { SECURITY_EVENT, SEVERITY } from "../types/security";
-import { AuthEventMetadata, TokenEventMetadata } from "../types/security/metadata.interface";
+import { AuthEventMetadata, TokenEventMetadata } from "../types/security";
 import { ExpressUser } from "../types/express/user";
 
 const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;

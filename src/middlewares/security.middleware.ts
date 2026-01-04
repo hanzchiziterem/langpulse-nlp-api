@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { logSecurityEvent } from "../libs/logging/securityEvents";
+import { logSecurityEvent } from "../libs/logging";
 import { SeverityLevel } from "../generated/prisma";
 import { SecurityEventType, SECURITY_EVENT, SEVERITY } from "../types/security";
-import { RequestEventMetadata } from "../types/security/metadata.interface";
+import { RequestEventMetadata } from "../types/security";
 
 export const securityContextMiddleware = async (
   req: Request,

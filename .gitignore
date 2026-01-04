@@ -2,3 +2,5 @@
 .env
 /src/generated/prisma
 /coverage
+/.jest-cache
+.env.test
