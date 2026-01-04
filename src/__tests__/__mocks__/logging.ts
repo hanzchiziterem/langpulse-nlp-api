@@ -1,0 +1,1 @@
+export const logSecurityEventMock = jest.fn();
