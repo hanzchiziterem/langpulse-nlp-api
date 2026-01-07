@@ -1,19 +1,22 @@
-import multer from 'multer';
-import path from 'path';
-import { ensureUploadsDirExists } from '../utils/cloudinary';
+import multer from "multer";
+import path from "path";
+import { ensureUploadsDirExists } from "../utils/cloudinary";
 
 const uploadsDir = ensureUploadsDirExists();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+const storage =
+  process.env.NODE_ENV === "test"
+    ? multer.memoryStorage()
+    : multer.diskStorage({
+        destination: (req, file, cb) => {
+          cb(null, uploadsDir);
+        },
+        filename: (req, file, cb) => {
+          cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+        },
+      });
 
-const fileFilter = (req:any, file:any, cb:any) => {
+const fileFilter = (req: any, file: any, cb: any) => {
   const filetypes = /jpeg|jpg|png|gif/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
@@ -21,11 +24,11 @@ const fileFilter = (req:any, file:any, cb:any) => {
   if (extname && mimetype) {
     return cb(null, true);
   }
-  cb(new Error('Error: Only images are allowed!'));
+  cb(new Error("Error: Only images are allowed!"));
 };
 
 export const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter
-}).single('profileImage'); 
+  fileFilter,
+}).single("profileImage");
