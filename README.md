@@ -8,6 +8,7 @@ A powerful, OpenAI-powered language analysis API built with Node.js, TypeScript,
 - 🧠 Text Analysis using GPT-4o-mini
 - 📜 View User Analysis History
 - 📥 Download Analysis Report
+- 🕵️‍♂️ Log Security Events
 - 🧪 Swagger & Postman Docs
 
 ## 🛠 Tech Stack
