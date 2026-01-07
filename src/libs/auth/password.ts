@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import prisma from "../../client/prisma";
-import type { PasswordValidationResult, PasswordPolicy, CredentialValidationOptions } from "../../types/auth";
-import { AuthEventMetadata, PasswordEventMetadata, SECURITY_EVENT, SEVERITY } from "../../types/security";
+import { PasswordPolicy, PasswordValidationResult, CredentialValidationOptions } from "@/types/auth/password.interface";
+import { PasswordEventMetadata, SECURITY_EVENT, SEVERITY } from "../../types/security";
 import { logSecurityEvent } from "../logging/securityEvents";
-import { calculatePasswordStrength } from "../../utils/password/calculatePasswordStrength.ts";
+import { calculatePasswordStrength } from "../../utils/password/calculatePasswordStrength";
 
 const DEFAULT_POLICY: PasswordPolicy = {
   minLength: 8,

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { logSecurityEvent } from "../libs/logging";
 import prisma from "../client/prisma";
-import { JwtPayload } from "../types/auth";
+import { JwtPayload } from "../types/auth/token.interface";
 import { SECURITY_EVENT, SEVERITY } from "../types/security";
 import { AuthEventMetadata, TokenEventMetadata } from "../types/security";
 import { ExpressUser } from "../types/express/user";

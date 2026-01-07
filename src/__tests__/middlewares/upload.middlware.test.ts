@@ -1,7 +1,7 @@
 jest.mock("../../utils/cloudinary");
 
 import request from "supertest";
-import { createTestApp } from "./testApp";
+import { createTestApp } from "../testApp";
 
 describe("Upload Middleware", () => {
   it("allows valid image files", async () => {

@@ -1,10 +1,10 @@
-export interface PasswordValidationResult {
+interface PasswordValidationResult {
   isValid: boolean;
   isLocked?: boolean;
   remainingAttempts?: number;
 }
 
-export interface PasswordPolicy {
+ interface PasswordPolicy {
   minLength: number;
   requireSpecialChar: boolean;
   requireNumber: boolean;
@@ -12,7 +12,13 @@ export interface PasswordPolicy {
   lockDurationMinutes: number;
 }
 
-export interface CredentialValidationOptions {
+interface CredentialValidationOptions {
   checkLockStatus?: boolean;
   recordAttempt?: boolean;
+}
+
+export{
+  PasswordValidationResult,
+  PasswordPolicy,
+  CredentialValidationOptions
 }

@@ -27,7 +27,7 @@ import {
   UserEventMetadata,
   PasswordEventMetadata,
 } from "@/types/security";
-import { codeSchema } from "@/schemas/verifyEmail.schema";
+import { codeSchema } from "../schemas/verifyEmail.schema";
 
 export const signupHandler = async (req: Request, res: Response) => {
   const valid = signupSchema.safeParse(req.body);

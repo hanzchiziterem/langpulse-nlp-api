@@ -12,7 +12,7 @@ jest.mock("../../utils/auth", () => ({
   getIdentifier: (req: Request) => req.ip || "unknown-ip",
 }));
 
-import { createTestApp } from "./testApp";
+import { createTestApp } from "../testApp";
 
 describe("Rate Limiter Middleware", () => {
   let app: any;

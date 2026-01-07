@@ -4,7 +4,7 @@ jest.mock("@/libs/logging", () => ({
 }));
 
 import request from "supertest";
-import { createTestApp } from "./testApp";
+import { createTestApp } from "../testApp";
 import { logSecurityEvent } from "@/libs/logging";
 import { SECURITY_EVENT, SEVERITY } from "@/types/security";
 
