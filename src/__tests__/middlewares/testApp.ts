@@ -6,6 +6,7 @@ import express, {
 } from "express";
 import { strictLimiter } from "@/middlewares/rateLimiter.middleware";
 import { upload } from "@/middlewares/upload.middleware";
+import { securityContextMiddleware } from "@/middlewares/security.middleware";
 
 const userAlreadyExists = (
   req: Request,
@@ -30,7 +31,10 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 export const createTestApp = () => {
   const app = express();
 
+  app.use(express.json());
   app.use(userAlreadyExists);
+  app.use(securityContextMiddleware);
+
   app.post("/test", strictLimiter, (_req, res) => {
     res.status(200).json({ success: true });
   });
