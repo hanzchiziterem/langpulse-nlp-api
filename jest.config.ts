@@ -6,7 +6,7 @@ const config: Config = {
   rootDir: "./",
   testRegex: ".*\\.(spec|test)\\.ts$",
   transform: {
-    "^.+\\.(t|j)s$": "ts-jest",
+    "^.+\\.ts$": ["ts-jest", { tsconfig: "tsconfig.json" }],
   },
   moduleFileExtensions: ["ts", "js", "json", "node"],
   collectCoverage: true,
@@ -18,18 +18,13 @@ const config: Config = {
     "!src/**/*.interface.ts",
   ],
   moduleNameMapper: {
-    "^@/(.*)$": ["<rootDir>/src/$1"],
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
 
   moduleDirectories: ["node_modules", "src"],
   clearMocks: true,
   setupFiles: ["<rootDir>/jest.setup.ts"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  globals: {
-    "ts-jest": {
-      tsconfig: "tsconfig.json",
-    },
-    testMatch: ["**/__tests__/**/*.test.ts"],
     coverageThreshold: {
       global: {
         branches: 80,
@@ -38,7 +33,6 @@ const config: Config = {
         statements: 80,
       },
     },
-  },
-};
+  };
 
 export default config;
