@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "6c7dd1dd-53c2-4d32-88a9-ed3462e6cd13",
+		"name": "langpulse-nlp-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12821581"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Jammy\",\r\n  \"email\": \"jammy@example.com\",\r\n  \"password\": \"pas324f\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify-email",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/verify?code=357805",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"verify"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "357805"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resend-verification",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ogbonnaenyikahanz@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/resend-verification",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"resend-verification"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signin",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU2YjNmYWNjLTVkYTAtNGU3Ny1hY2Q5LTc5YTFhMDEzYTg1NyIsImVtYWlsIjoiaGFuekBleGFtcGxlLmNvbSIsImlhdCI6MTc1MDUzMzU3MCwiZXhwIjoxNzUwNTM3MTcwfQ.krcBmocLYxjfH4BbG2mc-USQgyGd2BLaudrOP_NTOE0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Proxy-Authoriz",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"hanz@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU2YjNmYWNjLTVkYTAtNGU3Ny1hY2Q5LTc5YTFhMDEzYTg1NyIsImVtYWlsIjoiaGFuekBleGFtcGxlLmNvbSIsImlhdCI6MTc1MDUzMzU3MCwiZXhwIjoxNzUwNTM3MTcwfQ.krcBmocLYxjfH4BbG2mc-USQgyGd2BLaudrOP_NTOE0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Proxy-Authoriz",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"hanz@example.com\",\r\n  \"password\": \"password123\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/signout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"signout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "forgot-password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ogbonnaenyikahanz@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resend-forgot-password-code",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ogbonnaenyikahanz@gmail.com\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/resend-forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"resend-forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reset-password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\": \"\",\r\n    \"newPassword\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/reset-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"reset-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change-password",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjZDkzYmEzLTc0ZTItNDZkMC04MTE0LWNhYTMwZTkzMDg4ZiIsImVtYWlsIjoib2dib25uYWVueWlrYWhhbnpAZ21haWwuY29tIiwiaWF0IjoxNzUyNTIwMDEwLCJleHAiOjE3NTI1MjM2MTB9.p3F7IfIytN72h6C5uUp8u3aBOKb0-pa_qArQnE39nc0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"oldPassowrd\": \"Test@NLP102\",\r\n    \"newPassowrd\": \"Test@NLP104\",\r\n\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/auth/change-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "analyze-text",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM5YTFmM2YyLTQ5OGEtNDEzNy1hNGQ5LWU1Y2UzMTA3Njc5YSIsImVtYWlsIjoib2dib25uYWVueWlrYWhhbnpAZ21haWwuY29tIiwiaWF0IjoxNzUxNjI5MTQxLCJleHAiOjE3NTE2MzI3NDF9.UKK8oDUYcMLAVwluworuGeTf3L3XSrViVtrFji4qfvw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"There can't be peace without war.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/nlp/analyze",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"nlp",
+						"analyze"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view-history",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU2YjNmYWNjLTVkYTAtNGU3Ny1hY2Q5LTc5YTFhMDEzYTg1NyIsImVtYWlsIjoiaGFuekBleGFtcGxlLmNvbSIsImlhdCI6MTc1MTA5NTkwNywiZXhwIjoxNzUxNzAwNzA3fQ.hfmCQlTJ7kLAAjdyqY7RTtmy3RVWP1blavgQoATkAl0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/nlp/history",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"nlp",
+						"history"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "export-data",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

@@ -1,3 +1,6 @@
 /node_modules
 .env
-package-lock.json
+/src/generated/prisma
+/coverage
+/.jest-cache
+.env.test
